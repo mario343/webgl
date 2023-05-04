@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>WebGL Demo</title>
+  </head>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #898b8c;
+    }
+
+    canvas {
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
+    }
+    button:hover {
+      background-color: rgb(0, 0, 0);
+      color: white;
+    }
+    button {
+      font-size: 16px;
+      color: white;
+      background-color: #ff00b3;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 20px;
+      margin-left: 10px;
+      cursor: pointer;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
+    }
+  </style>
+  <body>
+    <canvas width="500px" height="500px"></canvas>
+    <button id="color-btn">Random color less go</button>
+    <script>
+      const canvas = document.querySelector("canvas");
+      const gl = canvas.getContext("webgl");
+      const vertices = [
+        -0.5, 0.5, 0.0, -0.5, -0.5, 0.0, 0.5, -0.5, 0.0,
+
+        -0.5, 0.5, 0.0, 0.5, -0.5, 0.0, 0.5, 0.5, 0.0,
+      ];
+
+      const vertexBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+      gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(vertices),
+        gl.STATIC_DRAW
+      );
+
+      const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+      gl.shaderSource(
+        vertexShader,
+        `
+        attribute vec3 aPosition;
+        void main() {
+          gl_Position = vec4(aPosition, 1.0);
+        }
+      `
+      );
+      gl.compileShader(vertexShader);
+
+      const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+      gl.shaderSource(
+        fragmentShader,
+        `
+         precision mediump float;
+        void main() {
+          gl_FragColor = vec4(0.988, 0.729, 0.012, 1.0);
+        }
+      `
+      );
+      gl.compileShader(fragmentShader);
+
+      const program = gl.createProgram();
+      gl.attachShader(program, vertexShader);
+      gl.attachShader(program, fragmentShader);
+      gl.linkProgram(program);
+      gl.useProgram(program);
+
+      const aPosition = gl.getAttribLocation(program, "aPosition");
+      gl.enableVertexAttribArray(aPosition);
+      gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+      gl.vertexAttribPointer(aPosition, 3, gl.FLOAT, false, 0, 0);
+
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+      const colorBtn = document.querySelector("#color-btn");
+      colorBtn.addEventListener("click", changeColor);
+      function changeColor() {
+        const r = Math.random();
+        const g = Math.random();
+        const b = Math.random();
+        gl.shaderSource(
+          fragmentShader,
+          `
+       precision mediump float;
+      void main() {
+        gl_FragColor = vec4(${r}, ${g}, ${b}, 1.0);
+      }
+    `
+        );
+        gl.compileShader(fragmentShader);
+        gl.linkProgram(program);
+        gl.useProgram(program);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+      }
+    </script>
+  </body>
+</html>
