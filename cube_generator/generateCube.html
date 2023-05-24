@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cube generator</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      input[type="text"] {
+        width: 950px;
+      }
+      canvas {
+        margin-top: 20px;
+        border: 1px solid #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="main-canvas" width="800" height="600"></canvas>
+    <script src="https://cdn.jsdelivr.net/npm/gl-matrix@3/gl-matrix.js"></script>
+    <script src="script.js"></script>
+    <div id="terminal">
+      <pre id="output"></pre>
+    </div>
+
+    <form id="command-form">
+      <input
+        type="text"
+        id="command-input"
+        placeholder="Wpisz komende..."
+        autofocus
+      />
+      <input type="submit" value="Wykonaj" />
+    </form>
+    <script>
+      const terminalOutput = document.getElementById("output");
+      const commandForm = document.getElementById("command-form");
+      const commandInput = document.getElementById("command-input");
+
+      commandForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const command = commandInput.value;
+        executeCommand(command);
+        commandInput.value = "";
+      });
+
+      function executeCommand(command) {
+        try {
+          eval(command); // Wykonaj wpisaną komendę jako kod JavaScript
+        } catch (error) {
+          console.error("Błąd:", error); // Wyświetl ewentualny błąd w konsoli
+        }
+      }
+    </script>
+    <div>type</div>
+    <div>
+      generateCube(1,[ [1.0, 1.0, 0.0], [1.0, 0.45, 0.3], [1.0, 0.2, 0.0], [0.2,
+      0.4, 0.0], [0.54, 1.0, 0.74], [1.0, 0.56, 0.23], ])
+    </div>
+    <div>in the console</div>
+    <div>for making a cube</div>
+    <div>you can change the values as you wish</div>
+    <div>have fun</div>
+  </body>
+</html>
