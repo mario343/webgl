@@ -28,6 +28,8 @@ const fragmentShaderTxt = `
     }
 `;
 
+const mat4 = glMatrix.mat4;
+
 class Triangle {
   constructor() {
     this.canvas = document.getElementById("main-canvas");
@@ -85,17 +87,17 @@ class Triangle {
 
     this.gl.uniformMatrix4fv(
       this.matWorldUniformLocation,
-      this.gl.FALSE,
+      false,
       this.worldMatrix
     );
     this.gl.uniformMatrix4fv(
       this.matViewUniformLocation,
-      this.gl.FALSE,
+      false,
       this.viewMatrix
     );
     this.gl.uniformMatrix4fv(
       this.matProjUniformLocation,
-      this.gl.FALSE,
+      false,
       this.projMatrix
     );
 
@@ -147,7 +149,21 @@ class Triangle {
       -1.0, 1.0, 1.0, 0.75, 0.25, 0.5, -1.0, -1.0, 1.0, 0.75, 0.25, 0.5, -1.0,
       -1.0, -1.0, 0.75, 0.25, 0.5, -1.0, 1.0, -1.0, 0.75, 0.25, 0.5,
 
-      // ... Remaining vertices
+      // Right
+      1.0, 1.0, 1.0, 0.25, 0.25, 0.75, 1.0, -1.0, 1.0, 0.25, 0.25, 0.75, 1.0,
+      -1.0, -1.0, 0.25, 0.25, 0.75, 1.0, 1.0, -1.0, 0.25, 0.25, 0.75,
+
+      // Front
+      1.0, 1.0, 1.0, 1.0, 0.0, 0.15, 1.0, -1.0, 1.0, 1.0, 0.0, 0.15, -1.0, -1.0,
+      1.0, 1.0, 0.0, 0.15, -1.0, 1.0, 1.0, 1.0, 0.0, 0.15,
+
+      // Back
+      1.0, 1.0, -1.0, 0.0, 1.0, 0.15, 1.0, -1.0, -1.0, 0.0, 1.0, 0.15, -1.0,
+      -1.0, -1.0, 0.0, 1.0, 0.15, -1.0, 1.0, -1.0, 0.0, 1.0, 0.15,
+
+      // Bottom
+      -1.0, -1.0, -1.0, 0.5, 0.5, 1.0, -1.0, -1.0, 1.0, 0.5, 0.5, 1.0, 1.0,
+      -1.0, 1.0, 0.5, 0.5, 1.0, 1.0, -1.0, -1.0, 0.5, 0.5, 1.0,
     ];
 
     const vertexBuffer = this.gl.createBuffer();
@@ -168,7 +184,17 @@ class Triangle {
       // Left
       5, 4, 6, 6, 4, 7,
 
-      // ... Remaining indices
+      // Right
+      8, 9, 10, 8, 10, 11,
+
+      // Front
+      13, 12, 14, 15, 14, 12,
+
+      // Back
+      16, 17, 18, 16, 18, 19,
+
+      // Bottom
+      21, 20, 22, 22, 20, 23,
     ];
 
     const indexBuffer = this.gl.createBuffer();
@@ -183,12 +209,13 @@ class Triangle {
 
   loop() {
     const loop = () => {
-      const angle = (performance.now() / 100 / 8) * 2 * Math.PI;
+      //essa tutaj sie zmienia predkosc
+      const angle = (performance.now() / 1000 / 8) * 2 * Math.PI;
 
       mat4.rotate(this.worldMatrix, this.identityMatrix, angle, [1, 2, 0]);
       this.gl.uniformMatrix4fv(
         this.matWorldUniformLocation,
-        this.gl.FALSE,
+        false,
         this.worldMatrix
       );
 
@@ -198,7 +225,7 @@ class Triangle {
         this.posAttrLocation,
         3,
         this.gl.FLOAT,
-        this.gl.FALSE,
+        false,
         6 * Float32Array.BYTES_PER_ELEMENT,
         0
       );
@@ -206,7 +233,7 @@ class Triangle {
         this.colorAttrLocation,
         3,
         this.gl.FLOAT,
-        this.gl.FALSE,
+        false,
         6 * Float32Array.BYTES_PER_ELEMENT,
         3 * Float32Array.BYTES_PER_ELEMENT
       );
